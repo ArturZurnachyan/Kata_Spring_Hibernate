@@ -24,7 +24,7 @@ public class UserDaoImp implements UserDao {
     @Override
     public User getUserByCar(String model, int series) {
         Query query = sessionFactory.getCurrentSession().
-                createQuery("from User u where u.car = (from Car c where c.models = :model and c.series = :series)", User.class);
+                createQuery("select u from User u join fetch  u.car c where c.models = :model and c.series = :series", User.class);
         query.setParameter("model", model);
         query.setParameter("series", series);
         return (User) query.getSingleResult();
@@ -33,7 +33,7 @@ public class UserDaoImp implements UserDao {
     @Override
     @SuppressWarnings("unchecked")
     public List<User> listUsers() {
-        TypedQuery<User> query = sessionFactory.getCurrentSession().createQuery("from User");
+        TypedQuery<User> query = sessionFactory.getCurrentSession().createQuery("from User u left join fetch  u.car c");
         return query.getResultList();
     }
 
